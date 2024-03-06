@@ -5,7 +5,7 @@ const char message[] =
 	"\n"
 	"Hi from ROTORO. We can put simple hello-world into `from scratch` image.\n"
 	"\n"
-	"Для работы сложных программ нам потрeбуются дополнительные библиотеки или целые ОС.\n"
+	"To run complex programs, we will need additional libraries or entire operating systems.\n"
 	"\n"
 	"https://rotoro.cloud\n"
 	"\n";
