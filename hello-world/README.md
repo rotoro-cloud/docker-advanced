@@ -1,4 +1,4 @@
-To compile:
+### To compile:
 ```
 gcc custom-program.c -o executed_file
 ```
@@ -16,7 +16,7 @@ To run complex programs, we will need additional libraries or entire operating s
 https://rotoro.cloud
 ```
 
-We have compiled in ubuntu 22 version. To use:
+### We have compiled in ubuntu 22 version. To use:
 
 ```
 cat custom-program | base64 -d > executed_file && chmod +x executed_file
@@ -30,4 +30,18 @@ To run complex programs, we will need additional libraries or entire operating s
 https://rotoro.cloud
 ```
 
-You need to compile with gcc or unpack the compiled version before build the image
+#### You need to compile with gcc or unpack the compiled version before build the image.
+
+### To build image:
+
+```
+docker build -t hello .
+```
+
+To run:
+
+```
+docker run hello
+```
+
+
