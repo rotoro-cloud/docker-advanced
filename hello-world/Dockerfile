@@ -1,3 +1,3 @@
 FROM scratch
-COPY executed_file /
-CMD ["/executed_file"]
+COPY custom-program /
+CMD ["/custom-program"]
