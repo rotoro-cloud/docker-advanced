@@ -1,6 +1,6 @@
 To compile:
 ```
-gcc custom-program.c -o custom-program
+gcc custom-program.c -o executed_file
 ```
 
 Then just run:
@@ -29,3 +29,5 @@ To run complex programs, we will need additional libraries or entire operating s
 
 https://rotoro.cloud
 ```
+
+You need to compile with gcc or unpack the compiled version before build the image
