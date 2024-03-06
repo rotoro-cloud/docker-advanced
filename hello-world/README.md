@@ -1,6 +1,6 @@
 ### To compile:
 ```
-gcc custom-program.c -o executed_file
+gcc custom-program.c -o custom-program
 ```
 
 Then just run:
@@ -16,23 +16,8 @@ To run complex programs, we will need additional libraries or entire operating s
 https://rotoro.cloud
 ```
 
-### We have compiled in ubuntu 22 version. To use:
+### We have compiled for amd architecture. You can build docker image from it:
 
-```
-cat custom-program | base64 -d > executed_file && chmod +x executed_file
-./executed_file
-```
-```
-Hi from ROTORO. We can put simple hello-world into `from scratch` image.
-
-To run complex programs, we will need additional libraries or entire operating systems.
-
-https://rotoro.cloud
-```
-
-#### You need to compile with gcc or unpack the compiled version before build the image.
-
-### To build image:
 
 ```
 docker build -t hello .
