@@ -1,0 +1,33 @@
+version: 2
+services:
+
+    vote:
+        image: voting-app
+        networks:
+        - frontend
+        - backend
+
+    result:
+        image: result-app
+        networks:
+        - frontend
+        - backend
+
+    redis:
+        image: redis
+        networks:
+        - backend
+
+    worker:
+        image: worker
+        networks:
+        - backend
+
+    db:
+        image: postgres:9.4
+        networks:
+        - backend
+
+networks:
+       frontend:
+       backend:
