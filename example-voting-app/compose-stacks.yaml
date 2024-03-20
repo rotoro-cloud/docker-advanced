@@ -1,0 +1,131 @@
+version:  "3.9"
+services:
+
+    vote:
+        image: dockersamples/examplevotingapp_vote
+
+        healthcheck: 
+            test: ["CMD", "curl", "-f", "http://localhost"]
+            interval: 15s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
+        depends_on:
+            redis:
+                condition: service_healthy
+        deploy:
+          replicas: 2
+
+        ports:
+        - published: "5000-5001"
+          target: "80"
+
+        networks:
+        - frontend
+        - backend
+
+    result:
+        image: dockersamples/examplevotingapp_result
+
+        healthcheck: 
+            test: ["CMD", "curl", "-f", "http://localhost"]
+            interval: 15s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
+        depends_on:
+            db:
+                condition: service_healthy 
+
+        ports:
+        - published: "6000"
+          target: "80"
+
+        networks:
+        - frontend
+        - dataplane
+
+    redis:
+        image: redis:alpine
+
+        healthcheck:
+            test: /healthchecks/redis.sh
+            interval: "5s"
+
+        configs:
+        - source: redis.sh
+          target: /healthchecks/redis.sh
+
+        networks:
+        - backend
+
+    worker:
+        image: dockersamples/examplevotingapp_worker
+
+        depends_on:
+            redis:
+                condition: service_healthy 
+            db:
+                condition: service_healthy 
+
+        networks:
+        - backend
+        - dataplane
+
+    db:
+        image: postgres:15-alpine
+
+        environment:
+            POSTGRES_USER: /run/secrets/db_username
+            POSTGRES_PASSWORD: /run/secrets/db_password
+
+        healthcheck:
+            test: /healthchecks/postgres.sh
+            interval: "5s"
+
+        configs:
+        - source: redis.sh
+          target: /healthchecks/redis.sh
+
+        secrets:
+        - source: db_username
+          target: /run/secrets/db_username
+        - source: db_password
+          target: /run/secrets/db_password
+
+        volumes:
+        - type: volume
+          source: db-data
+          target: /var/lib/postgresql/data
+
+        networks:
+        - dataplane
+
+networks:
+    frontend:
+        ipam:
+            config:
+            - subnet: 172.28.10.0/24
+    backend:
+        ipam:
+            config:
+            - subnet: 172.28.20.0/24
+    dataplane:
+        ipam:
+            config:
+            - subnet: 172.28.30.0/24
+
+volumes:
+  db-data:
+
+configs:
+  postgres.sh:
+    file: ./healthchecks/postgres.sh
+  redis.sh:
+    file: ./healthchecks/redis.sh
+
+secrets:
+   db_username:
+        file: ./db_username.txt
+   db_password:
+        file: ./db_password.txt
