@@ -3,8 +3,8 @@ set -eo pipefail
 
 host="$(hostname -i || echo '127.0.0.1')"
 user="${POSTGRES_USER:-postgres}"
-db="${POSTGRES_DB:-$POSTGRES_USER}"
-export PGPASSWORD="${POSTGRES_PASSWORD:-}"
+db="${POSTGRES_DB:-$user}"
+export PGPASSWORD="${POSTGRES_PASSWORD:-$user}"
 
 args=(
 	# force postgres to not use the local unix socket (test "external" connectibility)
