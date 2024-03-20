@@ -11,14 +11,16 @@ services:
             retries: 3
             start_period: 10s
         depends_on:
-            redis:
-                condition: service_healthy
+        - redis
         deploy:
           replicas: 2
+          placement:
+            constraints:
+            - node.role == worker
 
         ports:
-        - published: "5000-5001"
-          target: "80"
+        - published: 5000
+          target: 80
 
         networks:
         - frontend
@@ -34,12 +36,15 @@ services:
             retries: 3
             start_period: 10s
         depends_on:
-            db:
-                condition: service_healthy 
+        - db
+        deploy:
+          placement:
+            constraints:
+            - node.role == worker
 
         ports:
-        - published: "6000"
-          target: "80"
+        - published: 6000
+          target: 80
 
         networks:
         - frontend
@@ -51,10 +56,16 @@ services:
         healthcheck:
             test: /healthchecks/redis.sh
             interval: "5s"
+            start_period: "10s"
+        deploy:
+          placement:
+            constraints:
+            - node.role == worker
 
         configs:
         - source: redis.sh
           target: /healthchecks/redis.sh
+          mode: 0744
 
         networks:
         - backend
@@ -63,10 +74,12 @@ services:
         image: dockersamples/examplevotingapp_worker
 
         depends_on:
-            redis:
-                condition: service_healthy 
-            db:
-                condition: service_healthy 
+        - redis
+        - db
+        deploy:
+          placement:
+            constraints:
+            - node.role == worker
 
         networks:
         - backend
@@ -75,17 +88,24 @@ services:
     db:
         image: postgres:15-alpine
 
+        deploy:
+          placement:
+            constraints:
+            - node.role == worker
+
         environment:
-            POSTGRES_USER: /run/secrets/db_username
-            POSTGRES_PASSWORD: /run/secrets/db_password
+            POSTGRES_USER_FILE: /run/secrets/db_username
+            POSTGRES_PASSWORD_FILE: /run/secrets/db_password
 
         healthcheck:
             test: /healthchecks/postgres.sh
             interval: "5s"
+            start_period: "20s"
 
         configs:
-        - source: redis.sh
-          target: /healthchecks/redis.sh
+        - source: postgres.sh
+          target: /healthchecks/postgres.sh
+          mode: 0744
 
         secrets:
         - source: db_username
